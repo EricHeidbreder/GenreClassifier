@@ -10,6 +10,8 @@ import urllib
 from tqdm import tqdm
 from auth import generate_token
 
+tqdm.pandas()
+
 def plot_signals(signals):
     nrows = int(len(signals) / 5)
     ncols = int(len(signals) / 2)
@@ -196,3 +198,51 @@ def playlist_to_genres(user_id, playlist_id):
     song_df.to_csv(filepath, 
                    mode='a', 
                    index=False)
+    
+def calc_rms(x, hop_length=256, frame_length=512):
+    rms = librosa.feature.rms(x, frame_length=frame_length, hop_length=hop_length, center=True)
+    return rms    
+
+def calc_energy(x, hop_length=256, frame_length=512):
+    hop_length = hop_length
+    frame_length = frame_length
+
+    energy = np.array([
+        sum(abs(x[i:i+frame_length]**2))
+        for i in range(0, len(x), hop_length)
+        ])
+    return energy
+
+def calc_mfcc(x, sr, n_mfcc=12):
+    return librosa.feature.mfcc(x, sr=sr, n_mfcc=n_mfcc).T
+
+
+### MAY NEED TO GET RID OF THIS, WAS TRYING OUT PARALLEL PROCESSING ###
+def add_features(data):
+    data['energy_calc'] = data['location'].progress_apply(lambda x: calc_energy(x))
+    data['rms'] = data['location'].progress_apply(lambda x: calc_rms(x))
+    return data
+
+def new_cols(data, location, hop_length=256, frame_length=512):
+    
+    # What's the index of the location?
+    index = data.index[data['location'] == location].tolist()[0]
+    
+    # Get the raw audio data
+    x, sr = librosa.core.audio.__audioread_load(location, 
+                                        offset=0, 
+                                        duration=None, 
+                                        dtype=np.float32)
+    
+    # Convert Audio to Mono
+    x = librosa.to_mono(x)
+    
+    # Normalize the raw audio
+    x = librosa.util.normalize(x)
+    hop_length = hop_length
+    frame_length = frame_length
+
+    # Write data to cell
+    data.at[index, 'energy_calc'] = calc_energy(x)
+    data.at[index, 'rms_calc'] = calc_rms(x)
+    data.at[index, 'mfcc_calc'] = calc_mfcc(x, sr)
