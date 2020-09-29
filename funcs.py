@@ -216,14 +216,7 @@ def calc_energy(x, hop_length=256, frame_length=512):
 def calc_mfcc(x, sr, n_mfcc=12):
     return librosa.feature.mfcc(x, sr=sr, n_mfcc=n_mfcc).T
 
-
-### MAY NEED TO GET RID OF THIS, WAS TRYING OUT PARALLEL PROCESSING ###
-def add_features(data):
-    data['energy_calc'] = data['location'].progress_apply(lambda x: calc_energy(x))
-    data['rms'] = data['location'].progress_apply(lambda x: calc_rms(x))
-    return data
-
-def new_cols(data, location, hop_length=256, frame_length=512):
+def new_features(data, location, hop_length=256, frame_length=512):
     
     # What's the index of the location?
     index = data.index[data['location'] == location].tolist()[0]
@@ -246,3 +239,44 @@ def new_cols(data, location, hop_length=256, frame_length=512):
     data.at[index, 'energy_calc'] = calc_energy(x)
     data.at[index, 'rms_calc'] = calc_rms(x)
     data.at[index, 'mfcc_calc'] = calc_mfcc(x, sr)
+    
+def calc_features(data):
+    data['mean_energy'] = data['energy_calc'].progress_apply(lambda x: x.mean())
+    data['std_energy'] = data['energy_calc'].progress_apply(lambda x: x.std())
+    data['min_energy'] = data['energy_calc'].progress_apply(lambda x: x.min())
+    data['max_energy'] = data['energy_calc'].progress_apply(lambda x: x.max())
+    data['mfcc_mean'] = data['mfcc_calc'].apply(lambda x: x.mean(axis=0))
+    data['mfcc_std'] = data['mfcc_calc'].apply(lambda x: x.std(axis=0))
+    data['mfcc_min'] = data['mfcc_calc'].apply(lambda x: x.min(axis=0))
+    data['mfcc_max'] = data['mfcc_calc'].apply(lambda x: x.max(axis=0))
+    data['max_rms'] = data['rms_calc'].apply(np.max)
+    data['std_rms'] = data['rms_calc'].apply(np.std)
+    data['median_rms'] = data['rms_calc'].apply(np.median)
+    data['min_rms'] = data['rms_calc'].apply(np.min)
+    
+def split_features(data, nfilt=12):
+    # I want to split each of the mfcc calculations to their own features    
+    mfcc_mean_filters = pd.DataFrame(data['mfcc_mean'].tolist(),
+             columns=[f'mfcc_mean_{str(i).zfill(2)}' for i in range(nfilt)])
+
+    mfcc_std_filters = pd.DataFrame(data['mfcc_std'].tolist(),
+                 columns=[f'mfcc_std_{str(i).zfill(2)}' for i in range(nfilt)])
+
+    mfcc_min_filters = pd.DataFrame(data['mfcc_min'].tolist(),
+                 columns=[f'mfcc_min_{str(i).zfill(2)}' for i in range(nfilt)])
+
+    mfcc_max_filters = pd.DataFrame(data['mfcc_max'].tolist(),
+                 columns=[f'mfcc_max_{str(i).zfill(2)}' for i in range(nfilt)])
+    
+    new_df = pd.concat([data, mfcc_mean_filters, 
+                           mfcc_std_filters, 
+                           mfcc_max_filters, 
+                           mfcc_min_filters], axis=1)\
+                  .drop(columns=['mfcc_calc',
+                                'energy_calc',
+                                'mfcc_mean',
+                                'mfcc_std',
+                                'mfcc_min',
+                                'mfcc_max',
+                                ])
+    return new_df
