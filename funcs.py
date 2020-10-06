@@ -12,9 +12,10 @@ from auth import generate_token
 
 tqdm.pandas()
 
+# From Seth Adams DSP Background video: https://www.youtube.com/watch?v=Z7YM-HAz-IY&list=PLhA3b2k8R3t2Ng1WW_7MiXeh1pfQJQi_P
 def plot_signals(signals):
     nrows = int(len(signals) / 5)
-    ncols = int(len(signals) / 2)
+    ncols = int(len(signals) / 5)
     fig, axes = plt.subplots(nrows=nrows, ncols=ncols, sharex=False,
                             sharey=True, figsize=(20,5))
     fig.suptitle('Time Series', size=16)
@@ -26,10 +27,11 @@ def plot_signals(signals):
             axes[x,y].get_xaxis().set_visible(False)
             axes[x,y].get_yaxis().set_visible(False)
             i += 1
-            
+
+# From Seth Adams DSP Background video: https://www.youtube.com/watch?v=Z7YM-HAz-IY&list=PLhA3b2k8R3t2Ng1WW_7MiXeh1pfQJQi_P
 def plot_fft(fft, signals):
     nrows = int(len(signals) / 5)
-    ncols = int(len(signals) / 2)
+    ncols = int(len(signals) / 5)
     fig, axes = plt.subplots(nrows=nrows, ncols=ncols, sharex=False,
                             sharey=True, figsize=(20,5))
     fig.suptitle('Time Series', size=16)
@@ -44,9 +46,10 @@ def plot_fft(fft, signals):
             axes[x,y].get_yaxis().set_visible(False)
             i += 1
 
+# From Seth Adams DSP Background video: https://www.youtube.com/watch?v=Z7YM-HAz-IY&list=PLhA3b2k8R3t2Ng1WW_7MiXeh1pfQJQi_P
 def plot_fbank(fbank, signals):
     nrows = int(len(signals) / 5)
-    ncols = int(len(signals) / 2)
+    ncols = int(len(signals) / 5)
     fig, axes = plt.subplots(nrows=nrows, ncols=ncols, sharex=False,
                             sharey=True, figsize=(20,5))
     fig.suptitle('Filter Bank Coefficients', size=16)
@@ -59,10 +62,11 @@ def plot_fbank(fbank, signals):
             axes[x, y].get_xaxis().set_visible(False)
             axes[x, y].get_yaxis().set_visible(False)
             i += 1
-            
+
+# From Seth Adams DSP Background video: https://www.youtube.com/watch?v=Z7YM-HAz-IY&list=PLhA3b2k8R3t2Ng1WW_7MiXeh1pfQJQi_P
 def plot_mfccs(mfccs, signals):
     nrows = int(len(signals) / 5)
-    ncols = int(len(signals) / 2)
+    ncols = int(len(signals) / 5)
     fig, axes = plt.subplots(nrows=nrows, ncols=ncols, sharex=False,
                             sharey=True, figsize=(20,5))
     fig.suptitle('Mel Frequency Cepstrum Coefficients', size=16)
@@ -75,7 +79,8 @@ def plot_mfccs(mfccs, signals):
             axes[x, y].get_xaxis().set_visible(False)
             axes[x, y].get_yaxis().set_visible(False)
             i += 1
-            
+
+# From Seth Adams DSP Background video: https://www.youtube.com/watch?v=Z7YM-HAz-IY&list=PLhA3b2k8R3t2Ng1WW_7MiXeh1pfQJQi_P
 def envelope(y, rate, threshold):
     mask = []
     y = pd.Series(y).apply(np.abs) # since signal goes above and below x-axis
@@ -86,12 +91,14 @@ def envelope(y, rate, threshold):
         else:
             mask.append(False)
     return mask
-            
+
+# From Seth Adams DSP Background video: https://www.youtube.com/watch?v=Z7YM-HAz-IY&list=PLhA3b2k8R3t2Ng1WW_7MiXeh1pfQJQi_P
 def calc_fft(y, rate):
     n = len(y)
     freq = np.fft.rfftfreq(n, d=1 / rate)
     Y = abs(np.fft.rfft(y) / n)
     return (Y, freq)
+
 
 def playlist_to_genres(user_id, playlist_id):
     '''
