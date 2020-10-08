@@ -4,3 +4,8 @@ auth.py
 Capstone-check-in-2.ipynb
 
 data/.ipynb_checkpoints/
+/archive/
+data/cnn_modeling_10_g.csv
+data/ten_g_500_modeling_12filt.csv
+data/ten_g_500_modeling_12filt_uncomp.csv
+data/ten_g_500_modeling_26filt.csv.gz

@@ -220,10 +220,10 @@ def calc_energy(x, hop_length=256, frame_length=512):
         ])
     return energy
 
-def calc_mfcc(x, sr, n_mfcc=12):
+def calc_mfcc(x, sr, n_mfcc=26):
     return librosa.feature.mfcc(x, sr=sr, n_mfcc=n_mfcc).T
 
-def new_features(data, location, hop_length=256, frame_length=512):
+def new_features(data, location, hop_length=256, frame_length=512, n_mfcc=26):
     
     # What's the index of the location?
     index = data.index[data['location'] == location].tolist()[0]
@@ -245,7 +245,7 @@ def new_features(data, location, hop_length=256, frame_length=512):
     # Write data to cell
     data.at[index, 'energy_calc'] = calc_energy(x)
     data.at[index, 'rms_calc'] = calc_rms(x)
-    data.at[index, 'mfcc_calc'] = calc_mfcc(x, sr)
+    data.at[index, 'mfcc_calc'] = calc_mfcc(x, sr, n_mfcc)
     
 def calc_features(data):
     data['mean_energy'] = data['energy_calc'].progress_apply(lambda x: x.mean())
@@ -279,11 +279,11 @@ def split_features(data, nfilt=12):
                            mfcc_std_filters, 
                            mfcc_max_filters, 
                            mfcc_min_filters], axis=1)\
-                  .drop(columns=['mfcc_calc',
-                                'energy_calc',
-                                'mfcc_mean',
-                                'mfcc_std',
-                                'mfcc_min',
-                                'mfcc_max',
-                                ])
+#                   .drop(columns=['mfcc_calc',
+#                                 'energy_calc',
+#                                 'mfcc_mean',
+#                                 'mfcc_std',
+#                                 'mfcc_min',
+#                                 'mfcc_max',
+#                                 ])
     return new_df
