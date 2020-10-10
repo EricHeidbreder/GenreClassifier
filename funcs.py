@@ -14,8 +14,8 @@ tqdm.pandas()
 
 # From Seth Adams DSP Background video: https://www.youtube.com/watch?v=Z7YM-HAz-IY&list=PLhA3b2k8R3t2Ng1WW_7MiXeh1pfQJQi_P
 def plot_signals(signals):
-    nrows = int(len(signals) / 5)
     ncols = int(len(signals) / 5)
+    nrows = int(len(signals) / ncols)
     fig, axes = plt.subplots(nrows=nrows, ncols=ncols, sharex=False,
                             sharey=True, figsize=(20,5))
     fig.suptitle('Time Series', size=16)
@@ -27,11 +27,12 @@ def plot_signals(signals):
             axes[x,y].get_xaxis().set_visible(False)
             axes[x,y].get_yaxis().set_visible(False)
             i += 1
+    plt.tight_layout();
 
 # From Seth Adams DSP Background video: https://www.youtube.com/watch?v=Z7YM-HAz-IY&list=PLhA3b2k8R3t2Ng1WW_7MiXeh1pfQJQi_P
 def plot_fft(fft, signals):
-    nrows = int(len(signals) / 5)
     ncols = int(len(signals) / 5)
+    nrows = int(len(signals) / ncols)
     fig, axes = plt.subplots(nrows=nrows, ncols=ncols, sharex=False,
                             sharey=True, figsize=(20,5))
     fig.suptitle('Time Series', size=16)
@@ -45,11 +46,12 @@ def plot_fft(fft, signals):
             axes[x,y].get_xaxis().set_visible(False)
             axes[x,y].get_yaxis().set_visible(False)
             i += 1
+    plt.tight_layout();
 
 # From Seth Adams DSP Background video: https://www.youtube.com/watch?v=Z7YM-HAz-IY&list=PLhA3b2k8R3t2Ng1WW_7MiXeh1pfQJQi_P
 def plot_fbank(fbank, signals):
-    nrows = int(len(signals) / 5)
     ncols = int(len(signals) / 5)
+    nrows = int(len(signals) / ncols)
     fig, axes = plt.subplots(nrows=nrows, ncols=ncols, sharex=False,
                             sharey=True, figsize=(20,5))
     fig.suptitle('Filter Bank Coefficients', size=16)
@@ -62,11 +64,12 @@ def plot_fbank(fbank, signals):
             axes[x, y].get_xaxis().set_visible(False)
             axes[x, y].get_yaxis().set_visible(False)
             i += 1
+    plt.tight_layout();
 
 # From Seth Adams DSP Background video: https://www.youtube.com/watch?v=Z7YM-HAz-IY&list=PLhA3b2k8R3t2Ng1WW_7MiXeh1pfQJQi_P
 def plot_mfccs(mfccs, signals):
-    nrows = int(len(signals) / 5)
     ncols = int(len(signals) / 5)
+    nrows = int(len(signals) / ncols)
     fig, axes = plt.subplots(nrows=nrows, ncols=ncols, sharex=False,
                             sharey=True, figsize=(20,5))
     fig.suptitle('Mel Frequency Cepstrum Coefficients', size=16)
@@ -79,6 +82,7 @@ def plot_mfccs(mfccs, signals):
             axes[x, y].get_xaxis().set_visible(False)
             axes[x, y].get_yaxis().set_visible(False)
             i += 1
+    plt.tight_layout();
 
 # From Seth Adams DSP Background video: https://www.youtube.com/watch?v=Z7YM-HAz-IY&list=PLhA3b2k8R3t2Ng1WW_7MiXeh1pfQJQi_P
 def envelope(y, rate, threshold):
@@ -162,15 +166,6 @@ def playlist_to_genres(user_id, playlist_id):
                 try:
                     # There are multiple genres per artist
                     for genre in genres:
-                        # Now let's get the 30-second song sample into something we can use
-    #                     url = track_info['preview_url']
-#                         mp3file = urllib.request.urlopen(url)
-#                         os.makedirs(f'./scrapes/{genre}', exist_ok=True)
-
-    #                     # Let's write this song to a folder!
-    #                     with open(f'./scrapes/{genre}/{track_name.strip(punctuation)}.mp3','wb') as output:
-    #                           output.write(mp3file.read())
-
                         # Add info to dictionary
                         row = {'id' : track_id,
                                'genre' : genre,
