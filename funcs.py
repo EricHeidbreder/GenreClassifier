@@ -208,7 +208,8 @@ def calc_rms(x, hop_length=256, frame_length=512):
 def calc_energy(x, hop_length=256, frame_length=512):
     hop_length = hop_length
     frame_length = frame_length
-
+    
+    # Calculation for energy
     energy = np.array([
         sum(abs(x[i:i+frame_length]**2))
         for i in range(0, len(x), hop_length)
@@ -216,6 +217,7 @@ def calc_energy(x, hop_length=256, frame_length=512):
     return energy
 
 def calc_mfcc(x, sr, n_mfcc=26):
+    # librosa has a built in method for calculating mfcc
     return librosa.feature.mfcc(x, sr=sr, n_mfcc=n_mfcc).T
 
 def new_features(data, location, hop_length=256, frame_length=512, n_mfcc=26):
@@ -243,6 +245,7 @@ def new_features(data, location, hop_length=256, frame_length=512, n_mfcc=26):
     data.at[index, 'mfcc_calc'] = calc_mfcc(x, sr, n_mfcc)
     
 def calc_features(data):
+    # Need to create some summary statistics for these arrays to be able to passed through models
     data['mean_energy'] = data['energy_calc'].progress_apply(lambda x: x.mean())
     data['std_energy'] = data['energy_calc'].progress_apply(lambda x: x.std())
     data['min_energy'] = data['energy_calc'].progress_apply(lambda x: x.min())
